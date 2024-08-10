@@ -1,0 +1,68 @@
+{
+	"folders": [
+		{
+			"path": "D:/Programacion/SerialPortSimulator"
+		}
+	],
+	"settings": {
+		"C_Cpp.default.compilerPath": "C:/mingw/bin/gcc.exe",
+		"C_Cpp.default.intelliSenseMode": "gcc-x64",
+		"C_Cpp.default.includePath": [
+			"${workspaceFolder}/**",
+			"C:/mingw/lib/gcc/x86_64-w64-mingw32/13.2.0/include",
+			"C:/mingw/lib/gcc/x86_64-w64-mingw32/13.2.0/include-fixed",
+			"C:/mingw/x86_64-w64-mingw32/include"
+		],
+		"C_Cpp.default.defines": [
+			"_DEBUG",
+			"UNICODE"
+		],
+		"C_Cpp.default.cStandard": "c11",
+		"C_Cpp.default.cppStandard": "c++17",
+		"editor.formatOnSave": false,
+		"files.associations": {
+			"*.c": "c",
+			"*.h": "c"
+		},
+		"workbench.colorTheme": "GitHub Dark",
+        "workbench.iconTheme": "material-icon-theme"
+	},
+	"launch": {
+		"configurations": [
+			{
+				"name": "GDB",
+				"type": "cppdbg",
+				"request": "launch",
+				"program": "${workspaceFolder}/a.exe",
+				"args": [],
+				"stopAtEntry": false,
+				"cwd": "${workspaceFolder}",
+				"environment": [],
+				"externalConsole": false,
+				"MIMode": "gdb",
+				"setupCommands": [
+					{
+						"description": "Enable pretty-printing for gdb",
+						"text": "-enable-pretty-printing",
+						"ignoreFailures": true
+					}
+				],
+				"preLaunchTask": "build",
+				"miDebuggerPath": "C:/mingw/bin/gdb.exe",
+				"logging": {
+					"moduleLoad": false,
+					"trace": false,
+					"engineLogging": false,
+					"programOutput": true,
+					"exceptions": true
+				}
+			}
+		]
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-vscode.cpptools",
+			"twxs.cmake"
+		]
+	}
+}
