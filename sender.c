@@ -13,12 +13,10 @@ int main(int argc, char *argv[]) {
 
     HANDLE hSerial, hFile;
 
-    // Cambia char* comPort[] a char* comPort
     char *comPort = argv[1];
     char serialPort[20];
     sprintf(serialPort, "\\\\.\\%s", comPort);
 
-    // Cambia char* File[] a char* filePath
     char *filePath = argv[2];
 
     /* Open serial port */
