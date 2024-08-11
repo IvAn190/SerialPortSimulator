@@ -1,19 +1,23 @@
 import serial
+import subprocess
 
-def leer_puerto_serial(puerto='COM9', baudrate=9600, timeout=1):
+def start_sender():
+    subprocess.Popen(['exec/sender.exe', 'COM8', 'D:/Programacion/SerialPortSimulator/README.md'])
+
+def read_serial_port(port='COM9', baudrate=115200, timeout=1):
     try:
-        # Abrir el puerto serial
-        with serial.Serial(puerto, baudrate, timeout=timeout) as ser:
-            print(f"Conectado al puerto {puerto}")
+        start_sender()
+
+        with serial.Serial(port, baudrate, timeout=timeout) as ser:
+            print(f"Connected to port {port}")
             while True:
-                # Leer datos del puerto
-                datos = ser.readline().decode('utf-8').strip()
-                if datos:
-                    print(f"Datos recibidos: {datos}")
+                data = ser.readline().decode('utf-8').strip()
+                if data:
+                    print(f"Received data: {data}")
     except serial.SerialException as e:
-        print(f"Error al conectar con el puerto {puerto}: {e}")
+        print(f"Error connecting to port {port}: {e}")
     except KeyboardInterrupt:
-        print("Lectura interrumpida por el usuario.")
+        print("Reading interrupted by the user.")
 
 if __name__ == "__main__":
-    leer_puerto_serial()
+    read_serial_port()
