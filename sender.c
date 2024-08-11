@@ -13,11 +13,11 @@ int main(int argc, char *argv[]) {
 
     HANDLE hSerial, hFile;
 
-    char *comPort = argv[1];
+    char* comPort = argv[1];
     char serialPort[20];
     sprintf(serialPort, "\\\\.\\%s", comPort);
 
-    char *filePath = argv[2];
+    char* filePath = argv[2];
 
     /* Open serial port */
     hSerial = CreateFile(serialPort, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, 0, NULL);
