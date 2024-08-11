@@ -3,26 +3,26 @@
 #include <stdlib.h>
 #include "bib/defines.h"
 
-#define FILE "D:/Programacion/SerialPortSimulator/data.ubx"  // Name of the binary file to send
-#define SERIAL "COM8" // COM port 
 
 int main(int argc, char *argv[]) {
     int ret = EXIT_FAILURE;
-    // if (argc < 2) {
-    //     DEBUG_ERROR("Need 2 args to work! (port name & data file path)");
-    //     goto end;
-    // }
+    if (argc < 3) {
+        DEBUG_ERROR("Needs 2 args to work! (port name & data file path)");
+        goto end;
+    }
 
     HANDLE hSerial, hFile;
-    char comPort[] = SERIAL;
-    char serialPort[20];
 
-    // Concatenate to form the full serial port path
+    // Cambia char* comPort[] a char* comPort
+    char *comPort = argv[1];
+    char serialPort[20];
     sprintf(serialPort, "\\\\.\\%s", comPort);
 
-    // Open the serial port
-    hSerial = CreateFile(serialPort, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, 0, NULL);
+    // Cambia char* File[] a char* filePath
+    char *filePath = argv[2];
 
+    /* Open serial port */
+    hSerial = CreateFile(serialPort, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, 0, NULL);
     if (hSerial == INVALID_HANDLE_VALUE) {
         DWORD err = GetLastError();
         DEBUG_ERROR("Error opening serial port %s. Error code: %lu\n", comPort, err);
@@ -31,18 +31,16 @@ int main(int argc, char *argv[]) {
         DEBUG_OK("Serial port %s opened successfully!\n", comPort);
     }
 
-    // Open the binary file
-    hFile = CreateFile(FILE, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    
+    /* Open file */
+    hFile = CreateFile(filePath, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);  
     if (hFile == INVALID_HANDLE_VALUE) {
         DWORD err = GetLastError();
-        DEBUG_ERROR("Error opening file %s. Error code: %lu\n", FILE, err);
+        DEBUG_ERROR("Error opening file %s. Error code: %lu\n", filePath, err);
         goto end;
     } else {
-        DEBUG_OK("File %s opened successfully!\n", FILE);
+        DEBUG_OK("File %s opened successfully!\n", filePath);
     }
 
-    // Read the file and send it through the serial port
     BYTE buffer[4096];
     DWORD bytesRead, bytesWritten;
 
@@ -59,7 +57,7 @@ int main(int argc, char *argv[]) {
 
     ret = EXIT_SUCCESS;
 end:
-    if (hFile && hFile != INVALID_HANDLE_VALUE) CloseHandle(hFile);
-    if (hSerial && hSerial != INVALID_HANDLE_VALUE) CloseHandle(hSerial);
+    if (hFile) CloseHandle(hFile);
+    if (hSerial) CloseHandle(hSerial);
     return ret;
 }
