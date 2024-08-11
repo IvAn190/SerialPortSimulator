@@ -2,4 +2,8 @@
 
 ## Overview
 
-A tool just for simulate Serial Port COMx, to send data from that virtual port and get it from another application/script. 
+A tool to send data with a COM port. Using com0com library.
+
+## Requerements
+
+- com0com library. 

@@ -1,27 +1,65 @@
 #include <windows.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "bib/defines.h"
 
-#define SERIAL "\\\\.\\COM3"
+#define FILE "D:/Programacion/SerialPortSimulator/data.ubx"  // Name of the binary file to send
+#define SERIAL "COM8" // COM port 
 
-int main(int argc, char *argv) {
+int main(int argc, char *argv[]) {
     int ret = EXIT_FAILURE;
+    // if (argc < 2) {
+    //     DEBUG_ERROR("Need 2 args to work! (port name & data file path)");
+    //     goto end;
+    // }
 
-    HANDLE hSerial;
-    hSerial =  CreateFile(SERIAL, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, 0, NULL);
-    
+    HANDLE hSerial, hFile;
+    char comPort[] = SERIAL;
+    char serialPort[20];
 
-    /* Open the serial port */
-    if (hSerial == NULL || hSerial == INVALID_HANDLE_VALUE) {
+    // Concatenate to form the full serial port path
+    sprintf(serialPort, "\\\\.\\%s", comPort);
+
+    // Open the serial port
+    hSerial = CreateFile(serialPort, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, 0, NULL);
+
+    if (hSerial == INVALID_HANDLE_VALUE) {
         DWORD err = GetLastError();
-        DEBUG_ERROR("Error opening Serial port. Error: %lu\n", err);
+        DEBUG_ERROR("Error opening serial port %s. Error code: %lu\n", comPort, err);
         goto end;
     } else {
-        DEBUG_INFO("Serial port open!\n");
+        DEBUG_OK("Serial port %s opened successfully!\n", comPort);
     }
 
+    // Open the binary file
+    hFile = CreateFile(FILE, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    
+    if (hFile == INVALID_HANDLE_VALUE) {
+        DWORD err = GetLastError();
+        DEBUG_ERROR("Error opening file %s. Error code: %lu\n", FILE, err);
+        goto end;
+    } else {
+        DEBUG_OK("File %s opened successfully!\n", FILE);
+    }
+
+    // Read the file and send it through the serial port
+    BYTE buffer[4096];
+    DWORD bytesRead, bytesWritten;
+
+    DEBUG_INFO("Sending data ...\n");
+    while (ReadFile(hFile, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) {
+        if (!WriteFile(hSerial, buffer, bytesRead, &bytesWritten, NULL)) {
+            DWORD err = GetLastError();
+            DEBUG_ERROR("Error writing to the serial port. Error code: %lu\n", err);
+            goto end;
+        } else {
+            DEBUG_OK("%lu bytes written to the serial port\n", bytesWritten);
+        }
+    }
 
     ret = EXIT_SUCCESS;
 end:
-    CloseHandle(hSerial);
+    if (hFile && hFile != INVALID_HANDLE_VALUE) CloseHandle(hFile);
+    if (hSerial && hSerial != INVALID_HANDLE_VALUE) CloseHandle(hSerial);
     return ret;
 }
