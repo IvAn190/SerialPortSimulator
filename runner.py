@@ -58,7 +58,7 @@ def close_all_ports():
             subprocess.run(command_remove, cwd=com0com_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
             print(f"Port CNCA{port_number} and CNCB{port_number} successfully closed.")
         except subprocess.CalledProcessError as e:
-            print(f"Error closing ports CNCA{port_number} and CNCB{port_number}: {e.stdout} - {e.stderr}")
+            print(f"[-] Error closing ports CNCA{port_number} and CNCB{port_number}: {e.stdout} - {e.stderr}")
 
 def open_ports(port_a='COM8', port_b='COM9'):
     """Opens two new virtual ports with the specified names."""
@@ -73,9 +73,9 @@ def open_ports(port_a='COM8', port_b='COM9'):
             print("Errors:\n", result.stderr)
             return
         
-        print(f"Ports {port_a} and {port_b} have been successfully opened.")
+        print(f"[+] Ports {port_a} and {port_b} have been successfully opened.")
     except Exception as e:
-        print(f"Error opening the ports: {e}")
+        print(f"[-] Error opening the ports: {e}")
 
 if __name__ == "__main__":
     print("\n")
@@ -88,5 +88,4 @@ if __name__ == "__main__":
     else:
         DEBUG_INFO("Ports COM8 and COM9 are not open. Opening now...")
         open_ports('COM8', 'COM9')
-        DEBUG_OK("Ports COM8 and COM9 have been successfully opened and are ready for use.")
     print("\n")
