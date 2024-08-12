@@ -39,7 +39,20 @@ To test out that all is working correctly, run the receiver.py file, changing (i
 
 ## Runner
 
-The ```runner.py``` opens the ports COM8 & COM9 for a correct use. User must install com0com first. This tool aims to be implemented in the [uNavTools](https://github.com/IvAn190/uNavTools) repo. 
+The `runner.py` script is designed to manage and interact with virtual serial ports created using the `com0com` utility on Windows. Its primary purpose is to check the status of specific COM ports (in this case, `COM8` and `COM9`), ensure they are available, and if they are not, to open them. This script also requires administrator privileges to execute certain commands, such as modifying the virtual serial ports.
+
+### What It Does:
+- **Administrator Check**: The script begins by checking if it is running with administrator privileges. If not, it prompts the user to rerun the script with elevated permissions.
+- **Installation Directory Retrieval**: It locates the installation directory of `com0com` using the Windows Registry.
+- **Port Management**: The script lists the current virtual serial ports, checks if `COM8` and `COM9` are already open, and opens them if they are not.
+- **Debug Information**: Throughout the process, the script provides detailed debug information, such as the status of the ports and any actions taken.
+
+> [!WARNING]
+> - **Administrator Privileges**: The script requires administrator privileges to modify virtual serial ports. Ensure that the script is run with the necessary permissions, or it will prompt you to restart with elevated rights.
+> - **System-Specific**: This script is specifically designed for Windows systems with `com0com` installed. It will not function on Unix-based systems or without `com0com`.
 
 > [!NOTE]
-> Nevermind where the com0com library is installed because there is a script that finds the correct path to execute the program properly. 
+> - **Error Handling**: The script includes basic error handling to manage potential issues during the execution of commands. However, users should verify the output and logs to ensure that all operations complete successfully.
+> - **Customization**: The script currently focuses on `COM8` and `COM9`. If different ports are needed, the script can be easily modified to check and manage other COM ports.
+
+This script is a helpful tool for automating the setup and management of virtual serial ports, especially in environments where these ports are frequently used and need to be consistently available.
