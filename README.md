@@ -36,3 +36,10 @@ Where the user must input two parameters:
 ## Test
 
 To test out that all is working correctly, run the receiver.py file, changing (inside the file, manually), the port and path file. 
+
+## Runner
+
+The ```runner.py``` opens the ports COM8 & COM9 for a correct use. User must install com0com first. This tool aims to be implemented in the [uNavTools](https://github.com/IvAn190/uNavTools) repo. 
+
+> [!NOTE]
+> Nevermind where the com0com library is installed because there is a script that finds the correct path to execute the program properly. 
