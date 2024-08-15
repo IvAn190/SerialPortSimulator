@@ -2,22 +2,22 @@
 CC = gcc
 
 # Directories
-INCLUDES = -I./bib
-RUNNER_DIR = ./runner
-EXEC_DIR = ./exec
-SRC_DIR = .
+INCLUDES = -I.\\bib
+RUNNER_DIR = .\\runner
+SENDER_DIR = .\\sender
+EXEC_DIR = .\\exec
 
 # Source files for runner and sender
-RUNNER_SRCS = $(RUNNER_DIR)/runner.c
-SENDER_SRCS = $(SRC_DIR)/sender.c
+RUNNER_SRCS = $(RUNNER_DIR)\\runner.c
+SENDER_SRCS = $(SENDER_DIR)\\sender.c
 
 # Object files
-RUNNER_OBJS = $(RUNNER_DIR)/runner.o
-SENDER_OBJS = sender.o
+RUNNER_OBJS = $(RUNNER_DIR)\\runner.o
+SENDER_OBJS = $(SENDER_DIR)\\sender.o
 
 # Executable names
-RUNNER_EXEC = $(EXEC_DIR)/runner.exe
-SENDER_EXEC = $(EXEC_DIR)/sender.exe
+RUNNER_EXEC = $(EXEC_DIR)\\runner.exe
+SENDER_EXEC = $(EXEC_DIR)\\sender.exe
 
 # Compiler flags
 CFLAGS = -Wall -Wextra $(INCLUDES)
@@ -39,20 +39,20 @@ $(SENDER_EXEC): $(SENDER_OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 # Rule to compile .c files into .o files for runner
-$(RUNNER_DIR)/%.o: $(RUNNER_DIR)/%.c
+$(RUNNER_DIR)\\%.o: $(RUNNER_DIR)\\%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Rule to compile .c files into .o files for sender
-%.o: %.c
+$(SENDER_DIR)\\%.o: $(SENDER_DIR)\\%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 # Clean up object files after build (Windows version using del)
 clean_objs:
-	del /Q runner\\runner.o sender.o
+	del /Q $(RUNNER_DIR)\\runner.o $(SENDER_DIR)\\sender.o
 
 # Clean up all build files (Windows version using del)
 clean:
-	del /Q runner\\runner.o sender.o $(RUNNER_EXEC) $(SENDER_EXEC)
+	del /Q $(RUNNER_DIR)\\runner.o $(SENDER_DIR)\\sender.o $(RUNNER_EXEC) $(SENDER_EXEC)
 
 # Phony targets
 .PHONY: all clean clean_objs
