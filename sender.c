@@ -1,5 +1,4 @@
 #include <windows.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include "bib/defines.h"
 
@@ -48,11 +47,12 @@ int main(int argc, char *argv[]) {
             DWORD err = GetLastError();
             DEBUG_ERROR("Error writing to the serial port. Error code: %lu\n", err);
             goto end;
-        } else {
-            DEBUG_OK("%lu bytes written to the serial port\n", bytesWritten);
-        }
+        } 
+        // else {
+        //     DEBUG_OK("%lu bytes written to the serial port\n", bytesWritten);
+        // }
     }
-
+    DEBUG_OK("All data has been sent!\n");
     ret = EXIT_SUCCESS;
 end:
     if (hFile) CloseHandle(hFile);
