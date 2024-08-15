@@ -12,7 +12,7 @@ A tool to send data with a COM port. Using com0com library.
 
 Compile the script using this command:
 ```bash
-gcc .\sender.c -o sender
+make
 ```
 
 ## How does it works ? 
