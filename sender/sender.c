@@ -2,11 +2,6 @@
 #include <stdlib.h>
 #include "../bib/defines.h"
 
-// TODO:
-// 1. El programa una vez se ejecuta y el receptor deja de recivir datos porque ha puesto un tiempo t = 1, si el sender sigue teniendo datos,
-//    va a seguir intentando enviar dichos datos.
-//         1.1 Solucion: hacer un contador que mire si se estan enviadno datos, sino, se para el programa a los x segundos.
-
 int main(int argc, char *argv[]) {
     int ret = EXIT_FAILURE;
     if (argc < 3) {
@@ -23,7 +18,7 @@ int main(int argc, char *argv[]) {
     char* filePath = argv[2];
 
     /* Open serial port */
-    hSerial = CreateFile(serialPort, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, 0, NULL);
+    hSerial = CreateFile(serialPort, (GENERIC_READ | GENERIC_WRITE), 0, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
     if (hSerial == INVALID_HANDLE_VALUE) {
         DWORD err = GetLastError();
         DEBUG_ERROR("Error opening serial port %s. Error code: %lu\n", comPort, err);
@@ -43,21 +38,51 @@ int main(int argc, char *argv[]) {
     }
 
     BYTE buffer[4096];
+    OVERLAPPED overlapped = {0};
     DWORD bytesRead, bytesWritten;
+    BOOL result;
+
+    const DWORD TIMEOUT_MS = 10000; 
+    DWORD startTime = GetTickCount();
 
     DEBUG_INFO("Sending data ...\n");
     while (ReadFile(hFile, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) {
-        if (!WriteFile(hSerial, buffer, bytesRead, &bytesWritten, NULL)) {
+        result = WriteFile(hSerial, buffer, bytesRead, &bytesWritten, &overlapped);
+        if (!result) {
             DWORD err = GetLastError();
-            DEBUG_ERROR("Error writing to the serial port. Error code: %lu\n", err);
+            if (err == ERROR_IO_PENDING) {
+                DWORD waitResult = WaitForSingleObject(hSerial, TIMEOUT_MS);
+                if (waitResult == WAIT_OBJECT_0) {
+                    if (!GetOverlappedResult(hSerial, &overlapped, &bytesWritten, TRUE)) {
+                        DWORD waitError = GetLastError();
+                        DEBUG_ERROR("Error waiting for the overlapped result. Error code: %lu\n", waitError);
+                        goto end;   
+                    }
+                    startTime = GetTickCount(); 
+                } else if (waitResult == WAIT_TIMEOUT) {
+                    DEBUG_ERROR("Timeout: No data sent in 10 seconds\n");
+                    goto end;
+                } else {
+                    DWORD waitError = GetLastError();
+                    DEBUG_ERROR("Error waiting for the write completion. Error code: %lu\n", waitError);
+                    goto end;
+                }
+            } else {
+                DEBUG_ERROR("Error writing to the serial port. Error code: %lu\n", err);
+                goto end;
+            }
+        } else {
+            startTime = GetTickCount();
+        }
+
+        if (GetTickCount() - startTime >= TIMEOUT_MS) {
+            DEBUG_ERROR("Timeout: No data sent in 10 seconds\n");
             goto end;
-        } 
-        // else {
-        //     DEBUG_OK("%lu bytes written to the serial port\n", bytesWritten);
-        // }
+        }
     }
     DEBUG_OK("All data has been sent!\n");
     ret = EXIT_SUCCESS;
+
 end:
     if (hFile) CloseHandle(hFile);
     if (hSerial) CloseHandle(hSerial);
