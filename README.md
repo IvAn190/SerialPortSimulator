@@ -15,7 +15,9 @@ Compile the script using this command:
 make
 ```
 
-## How does it works ? 
+## Sender
+
+### How does it works ? 
 
 ```bash
 .\sender.exe COMx path/to/file
@@ -32,10 +34,6 @@ Where the user must input two parameters:
 
 > [!WARNING] 
 > Before starting, we need to start com0com application and configure both ports, receiver and sender. Due to Windows permissions, we cannot use one port with multiple programs/applications. Because of that, we must configure two ports in the com0com application (sender & receiver). 
-
-## Test
-
-To test out that all is working correctly, run the receiver.py file, changing (inside the file, manually), the port and path file. 
 
 ## Runner
 
@@ -56,3 +54,7 @@ The `runner.py` script is designed to manage and interact with virtual serial po
 > - **Customization**: The script currently focuses on `COM8` and `COM9`. If different ports are needed, the script can be easily modified to check and manage other COM ports.
 
 This script is a helpful tool for automating the setup and management of virtual serial ports, especially in environments where these ports are frequently used and need to be consistently available.
+
+## Test
+
+To test out that all is working correctly, run the receiver.py file, changing (inside the file, manually), the port and path file. 
